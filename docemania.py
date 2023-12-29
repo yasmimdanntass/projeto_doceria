@@ -3,6 +3,7 @@ import random
 from datetime import date
 import arqs
 
+
 data_atual = date.today()
 
 doces_dic={}
@@ -13,6 +14,48 @@ clientes_dic = arqs.read_all('clientes.dat')
 doces_dic = arqs.read_all('doces.dat')
 vendas_dic = arqs.read_all('vendas.dat')
 
+# VALIDADOR DE CPF #    
+
+def cpf():
+    cpf_cliente = str(input("Insira o CPF do cliente: "))
+    tamanho_cpf = len(cpf_cliente)
+
+    if tamanho_cpf == 11 and cpf_cliente != cpf_cliente[::-1]:
+        # PRIMEIRA VALIDAÇÃO
+        valor_final = 0 
+
+        for i in range(9):
+            valor_1 = int(cpf_cliente[i])
+            valor_2 = 10 - i
+            valor_final += valor_1 * valor_2
+
+        resto = valor_final % 11
+
+        if (resto <= 1 and cpf_cliente[9] == "0") or (resto >= 2 and cpf_cliente[9] == str(11 - resto)):
+        # SEGUNDA VALIDAÇÃO
+            valor_final = 0
+
+            for i in range(10):
+                valor_1 = int(cpf_cliente[i])
+                valor_2 = 11 - i
+                valor_final += valor_1 * valor_2
+
+            resto = valor_final % 11
+
+            if (resto <= 1 and cpf_cliente[10] == "0") or (resto >= 2 and cpf_cliente[10] == str(11 - resto)):
+                print("CPF Válido!")
+            else:
+                print("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
+                input("Pressione ENTER para inserir o CPF novamente.")
+                cpf() 
+        else:
+            print("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
+            input("Pressione ENTER para inserir o CPF novamente.")
+            cpf()  
+    else:
+        print("Valor inválido! Certifique-se de que o CPF do cliente possui 11 caracteres e não é um palíndromo.")
+        input("Pressione ENTER para inserir o CPF novamente.")
+        cpf()  
 
 # TELA INICIAL #
 def inicial():
@@ -115,7 +158,6 @@ def cadastro_doces():
     data_prod = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
     doces_dic[cod_prod] = [desc_prod, cod_prod, qtd_prod, valor_prod, data_prod]
     arqs.insert('doces.dat', doces_dic)
-    arqs.insert('doces.txt', doces_dic)
     print()
     print("Cadastro de doce concluído!")
     input("TECLE ENTER PARA PROSSEGUIR")
@@ -201,12 +243,56 @@ def cadastro_clientes():
     print("Olá! Você está na tela de cadastro de seus clientes.")
     print("Para prosseguir, preencha as informações solicitadas.")
     nome_cliente = input("Insira o nome completo do cliente: ")
-    
-    cpf_cliente = input("Insira o CPF do cliente: ")
+    cpf_cliente = 0
+    while len(nome_cliente) <= 3:
+        print("Insira um nome válido e com mais de 3 caracteres. Você será direcionado à tela de clientes para realizar o cadastro novamente.")
+        input("TECLE ENTER PARA PROSSEGUIR")
+        cadastro_clientes()
+    cpf_cliente = str(input("Insira o CPF do cliente: "))
+    tamanho_cpf = len(cpf_cliente)
+
+    if tamanho_cpf == 11 and cpf_cliente != cpf_cliente[::-1]:
+        # PRIMEIRA VALIDAÇÃO
+        valor_final = 0 
+
+        for i in range(9):
+            valor_1 = int(cpf_cliente[i])
+            valor_2 = 10 - i
+            valor_final += valor_1 * valor_2
+
+        resto = valor_final % 11
+
+        if (resto <= 1 and cpf_cliente[9] == "0") or (resto >= 2 and cpf_cliente[9] == str(11 - resto)):
+        # SEGUNDA VALIDAÇÃO
+            valor_final = 0
+
+            for i in range(10):
+                valor_1 = int(cpf_cliente[i])
+                valor_2 = 11 - i
+                valor_final += valor_1 * valor_2
+
+            resto = valor_final % 11
+
+            if (resto <= 1 and cpf_cliente[10] == "0") or (resto >= 2 and cpf_cliente[10] == str(11 - resto)):
+                print("CPF Válido!")
+            else:
+                print("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
+                input("Pressione ENTER para realizar o cadastro novamente.")
+                cadastro_clientes()
+                
+        else:
+            print("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
+            input("Pressione ENTER para realizar o cadastro novamente.")
+            cadastro_clientes()
+            
+    else:
+        print("Valor inválido! Certifique-se de que o CPF do cliente possui 11 caracteres e não é um palíndromo.")
+        input("Pressione ENTER para realizar o cadastro novamente.")
+        cadastro_clientes()
+        
     data_cadastro = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
     clientes_dic[cpf_cliente]=[nome_cliente, cpf_cliente, data_cadastro]
     arqs.insert('clientes.dat', clientes_dic)
-    arqs.insert('clientes.txt', clientes_dic)
     print(f"Cadastro de cliente concluído em {data_cadastro}!")
     input("TECLE ENTER PARA PROSSEGUIR")
 
@@ -243,7 +329,7 @@ def edicao_clientes():
         data_cadastro = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
         clientes_dic[cpf_cliente]=[nome_cliente, cpf_cliente, data_cadastro]
         arqs.insert('clientes.dat', clientes_dic)
-        arqs.insert('clientes.txt', clientes_dic)
+        
         print()
         print("Edição concluída!")
         print()
@@ -264,7 +350,7 @@ def delecao_clientes():
     if cpf_cliente in clientes_dic:
         del clientes_dic[cpf_cliente]
         arqs.insert('clientes.dat', clientes_dic)
-        arqs.insert('clientes.txt', clientes_dic)
+        
         print()
         print("Deleção de cadastro do cliente concluída!")
         print()
@@ -319,9 +405,9 @@ def cadastro_vendas():
 
         doces_dic[cod_prod][2]= doces_dic[cod_prod][2]- qtd_prod_venda
         arqs.insert('vendas.dat', vendas_dic)
-        arqs.insert('vendas.txt', vendas_dic)
+       
         arqs.insert('doces.dat', doces_dic)
-        arqs.insert('doces.txt', doces_dic)
+       
         print(f"O valor final da transação é de R${valor_venda}")
         print(f"Serviço efetuado em {data_venda}")
         input("TECLE ENTER PARA PROSSEGUIR")
@@ -369,9 +455,9 @@ def delecao_vendas():
    if id_venda in vendas_dic:
        del vendas_dic[id_venda]
        arqs.insert('vendas.dat', vendas_dic)
-       arqs.insert('vendas.txt', vendas_dic)
+       
        arqs.insert('doces.dat', doces_dic)
-       arqs.insert('doces.txt', doces_dic)
+       
        print()
        print("Deleção de cadastro do cliente concluída!")
        print()
@@ -412,7 +498,9 @@ def relatorios():
     if resposta == 3:
         print(f"Os dados sobre vendas disponíveis são:")
         print()
-        print("ID: ", vendas_dic[line][0], "Código do produto: ", vendas_dic[line][1], "CPF do cliente: ", vendas_dic[line][2], "Quantidade de produtos: ", vendas_dic[line][3], "Data de cadastro: ", vendas_dic[line][4])
+        arquivos_vendas = arqs.read_all("vendas.dat")
+        for line in arquivos_clientes:
+            print("ID: ", vendas_dic[line][0], "Código do produto: ", vendas_dic[line][1], "CPF do cliente: ", vendas_dic[line][2], "Quantidade de produtos: ", vendas_dic[line][3], "Data de cadastro: ", vendas_dic[line][4])
     if resposta != 1 and resposta != 2 and resposta != 3 and resposta != 0:
         print(f"Resposta inválida! Você será enviado novamente à tela de início!")
     print()
