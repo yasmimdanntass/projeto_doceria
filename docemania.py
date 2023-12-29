@@ -105,6 +105,11 @@ def cadastro_doces():
     print()
     desc_prod = input("Insira uma breve descrição do produto: ")
     cod_prod = input("Insira o código do produto (à sua escolha e diferente dos demais): ")
+    while cod_prod in doces_dic:
+        print("Código já utilizado em outro produto. Escolha outro!")
+        cod_prod = input("Insira o código do produto (à sua escolha e diferente dos demais): ")
+    else:
+        print("Código de produto disponível!")
     qtd_prod = int(input("Insira a quantidade de produtos disponíveis: "))
     valor_prod = float(input("Insira o valor do produto: R$"))
     data_prod = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
@@ -193,14 +198,12 @@ def cadastro_clientes():
     print("Olá! Você está na tela de cadastro de seus clientes.")
     print("Para prosseguir, preencha as informações solicitadas.")
     nome_cliente = input("Insira o nome completo do cliente: ")
+    
     cpf_cliente = input("Insira o CPF do cliente: ")
     data_cadastro = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
     clientes_dic[cpf_cliente]=[nome_cliente, cpf_cliente, data_cadastro]
     arqs.insert('clientes.dat', clientes_dic)
-    print(f"Cadastro efetuado em {data_cadastro}")
-    input("TECLE ENTER PARA PROSSEGUIR")
-    print()
-    print("Cadastro de cliente concluído!")
+    print(f"Cadastro de cliente concluído em {data_cadastro}!")
     input("TECLE ENTER PARA PROSSEGUIR")
 
 # Pesquisa de clientes
@@ -370,10 +373,35 @@ def delecao_vendas():
        input("TECLE ENTER PARA PROSSEGUIR")
 
 
+#Relatórios
+       
+def relatorios():
+    print()
+    print("Olá! Você está na tela de relatórios.")
+    print()
+    print("Para prosseguir, digite:")
+    print("[1] - Para visualizar dados dos doces disponíveis.")
+    print("[2] - Para visualizar dados dos clientes.")
+    print("[3] - Para visualizar dados das vendas")
+    print("[0] - Para retornar à tela de início")
+    resposta = int(input())
+    print()
+    if resposta == 1:
+        print({f"Os dados sobre doces disponíveis são:"})
+        print(doces_dic)
+    if resposta == 2:
+        print({f"Os dados sobre clientes disponíveis são:"})
+        print(clientes_dic)
+    if resposta == 3:
+        print({f"Os dados sobre vendas disponíveis são:"})
+        print(vendas_dic)
+    if resposta != 1 and resposta != 2 and resposta != 3 and resposta != 0:
+        print(f"Resposta inválida! Você será enviado novamente à tela de início!")
+    print()
+    input("OPERAÇÃO CONCLUÍDA! PRESSIONE ENTER PARA PROSSEGUIR!")
+    print()
+    inicial()
 
-# Pesquisa de vendas
-
-# Cancelamento de vendas
 
 ########################################################################################################################################################
 
@@ -433,8 +461,11 @@ while var_inicial != "0":
                 print("OPÇÃO INVÁLIDA")
                 input("TECLE ENTER PARA PROSSEGUIR")
             var_vendas = vendas()
-        if var_clientes == "0":
+        if var_vendas == "0":
             var_inicial = inicial()
+
+    if var_inicial == "4":
+        relatorios()
 
     if var_inicial == "5":
         var_informacoes = informacoes()
