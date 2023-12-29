@@ -115,6 +115,7 @@ def cadastro_doces():
     data_prod = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
     doces_dic[cod_prod] = [desc_prod, cod_prod, qtd_prod, valor_prod, data_prod]
     arqs.insert('doces.dat', doces_dic)
+    arqs.insert('doces.txt', doces_dic)
     print()
     print("Cadastro de doce concluído!")
     input("TECLE ENTER PARA PROSSEGUIR")
@@ -157,6 +158,7 @@ def edicao_doces():
         data_prod = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
         doces_dic[cod_prod] = [desc_prod, cod_prod, qtd_prod, valor_prod, data_prod]
         arqs.insert('doces.dat', doces_dic)
+        arqs.insert('doces.txt', doces_dic)
         print(f"Data de cadastro agora refere-se ao dia {doces_dic[cod_prod][4]}")
         print()
         print("Edição concluída!")
@@ -178,6 +180,7 @@ def delecao_doces():
     if cod_prod in doces_dic:
         del doces_dic[cod_prod]
         arqs.insert('doces.dat', doces_dic)
+        arqs.insert('doces.txt', doces_dic)
         print()
         print("Deleção de doce concluída!")
         print()
@@ -203,6 +206,7 @@ def cadastro_clientes():
     data_cadastro = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
     clientes_dic[cpf_cliente]=[nome_cliente, cpf_cliente, data_cadastro]
     arqs.insert('clientes.dat', clientes_dic)
+    arqs.insert('clientes.txt', clientes_dic)
     print(f"Cadastro de cliente concluído em {data_cadastro}!")
     input("TECLE ENTER PARA PROSSEGUIR")
 
@@ -239,6 +243,7 @@ def edicao_clientes():
         data_cadastro = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
         clientes_dic[cpf_cliente]=[nome_cliente, cpf_cliente, data_cadastro]
         arqs.insert('clientes.dat', clientes_dic)
+        arqs.insert('clientes.txt', clientes_dic)
         print()
         print("Edição concluída!")
         print()
@@ -259,6 +264,7 @@ def delecao_clientes():
     if cpf_cliente in clientes_dic:
         del clientes_dic[cpf_cliente]
         arqs.insert('clientes.dat', clientes_dic)
+        arqs.insert('clientes.txt', clientes_dic)
         print()
         print("Deleção de cadastro do cliente concluída!")
         print()
@@ -313,7 +319,9 @@ def cadastro_vendas():
 
         doces_dic[cod_prod][2]= doces_dic[cod_prod][2]- qtd_prod_venda
         arqs.insert('vendas.dat', vendas_dic)
+        arqs.insert('vendas.txt', vendas_dic)
         arqs.insert('doces.dat', doces_dic)
+        arqs.insert('doces.txt', doces_dic)
         print(f"O valor final da transação é de R${valor_venda}")
         print(f"Serviço efetuado em {data_venda}")
         input("TECLE ENTER PARA PROSSEGUIR")
@@ -361,7 +369,9 @@ def delecao_vendas():
    if id_venda in vendas_dic:
        del vendas_dic[id_venda]
        arqs.insert('vendas.dat', vendas_dic)
+       arqs.insert('vendas.txt', vendas_dic)
        arqs.insert('doces.dat', doces_dic)
+       arqs.insert('doces.txt', doces_dic)
        print()
        print("Deleção de cadastro do cliente concluída!")
        print()
@@ -384,17 +394,25 @@ def relatorios():
     print("[2] - Para visualizar dados dos clientes.")
     print("[3] - Para visualizar dados das vendas")
     print("[0] - Para retornar à tela de início")
+    print()
     resposta = int(input())
     print()
     if resposta == 1:
-        print({f"Os dados sobre doces disponíveis são:"})
-        print(doces_dic)
+        print(f"Os dados sobre doces disponíveis são:")
+        print()
+        arquivos_doces = arqs.read_all("doces.dat")
+        for line in arquivos_doces:
+            print("Descrição: ", doces_dic[line][0], "Código: ", doces_dic[line][1], "Estoque: ", doces_dic[line][2], "Preço: ", doces_dic[line][3], "Data de Cadastro: ", doces_dic[line][4])
     if resposta == 2:
-        print({f"Os dados sobre clientes disponíveis são:"})
-        print(clientes_dic)
+        print(f"Os dados sobre clientes disponíveis são:")
+        print()
+        arquivos_clientes = arqs.read_all("clientes.dat")
+        for line in arquivos_clientes:
+            print("Nome: ", clientes_dic[line][0], "CPF: ", clientes_dic[line][1], "Data de cadastro: ", clientes_dic[line][2])
     if resposta == 3:
-        print({f"Os dados sobre vendas disponíveis são:"})
-        print(vendas_dic)
+        print(f"Os dados sobre vendas disponíveis são:")
+        print()
+        print("ID: ", vendas_dic[line][0], "Código do produto: ", vendas_dic[line][1], "CPF do cliente: ", vendas_dic[line][2], "Quantidade de produtos: ", vendas_dic[line][3], "Data de cadastro: ", vendas_dic[line][4])
     if resposta != 1 and resposta != 2 and resposta != 3 and resposta != 0:
         print(f"Resposta inválida! Você será enviado novamente à tela de início!")
     print()
@@ -478,4 +496,3 @@ while var_inicial != "0":
 
 print()
 print("OBRIGADO POR UTILIZAR NOSSOS SERVIÇOS! :)")
-print()
