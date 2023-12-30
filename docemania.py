@@ -14,49 +14,6 @@ clientes_dic = arqs.read_all('clientes.dat')
 doces_dic = arqs.read_all('doces.dat')
 vendas_dic = arqs.read_all('vendas.dat')
 
-# VALIDADOR DE CPF #    
-
-def cpf():
-    cpf_cliente = str(input("Insira o CPF do cliente: "))
-    tamanho_cpf = len(cpf_cliente)
-
-    if tamanho_cpf == 11 and cpf_cliente != cpf_cliente[::-1]:
-        # PRIMEIRA VALIDAÇÃO
-        valor_final = 0 
-
-        for i in range(9):
-            valor_1 = int(cpf_cliente[i])
-            valor_2 = 10 - i
-            valor_final += valor_1 * valor_2
-
-        resto = valor_final % 11
-
-        if (resto <= 1 and cpf_cliente[9] == "0") or (resto >= 2 and cpf_cliente[9] == str(11 - resto)):
-        # SEGUNDA VALIDAÇÃO
-            valor_final = 0
-
-            for i in range(10):
-                valor_1 = int(cpf_cliente[i])
-                valor_2 = 11 - i
-                valor_final += valor_1 * valor_2
-
-            resto = valor_final % 11
-
-            if (resto <= 1 and cpf_cliente[10] == "0") or (resto >= 2 and cpf_cliente[10] == str(11 - resto)):
-                print("CPF Válido!")
-            else:
-                print("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
-                input("Pressione ENTER para inserir o CPF novamente.")
-                cpf() 
-        else:
-            print("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
-            input("Pressione ENTER para inserir o CPF novamente.")
-            cpf()  
-    else:
-        print("Valor inválido! Certifique-se de que o CPF do cliente possui 11 caracteres e não é um palíndromo.")
-        input("Pressione ENTER para inserir o CPF novamente.")
-        cpf()  
-
 # TELA INICIAL #
 def inicial():
     os.system("clear")
@@ -242,12 +199,14 @@ def cadastro_clientes():
     print()
     print("Olá! Você está na tela de cadastro de seus clientes.")
     print("Para prosseguir, preencha as informações solicitadas.")
-    nome_cliente = input("Insira o nome completo do cliente: ")
+    nome_cliente = str(input("Insira o nome completo do cliente: "))
     cpf_cliente = 0
+
     while len(nome_cliente) <= 3:
         print("Insira um nome válido e com mais de 3 caracteres. Você será direcionado à tela de clientes para realizar o cadastro novamente.")
         input("TECLE ENTER PARA PROSSEGUIR")
         cadastro_clientes()
+
     cpf_cliente = str(input("Insira o CPF do cliente: "))
     tamanho_cpf = len(cpf_cliente)
 
@@ -295,6 +254,7 @@ def cadastro_clientes():
     arqs.insert('clientes.dat', clientes_dic)
     print(f"Cadastro de cliente concluído em {data_cadastro}!")
     input("TECLE ENTER PARA PROSSEGUIR")
+    inicial()
 
 # Pesquisa de clientes
 
@@ -499,7 +459,7 @@ def relatorios():
         print(f"Os dados sobre vendas disponíveis são:")
         print()
         arquivos_vendas = arqs.read_all("vendas.dat")
-        for line in arquivos_clientes:
+        for line in arquivos_vendas:
             print("ID: ", vendas_dic[line][0], "Código do produto: ", vendas_dic[line][1], "CPF do cliente: ", vendas_dic[line][2], "Quantidade de produtos: ", vendas_dic[line][3], "Data de cadastro: ", vendas_dic[line][4])
     if resposta != 1 and resposta != 2 and resposta != 3 and resposta != 0:
         print(f"Resposta inválida! Você será enviado novamente à tela de início!")
