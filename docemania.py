@@ -157,7 +157,6 @@ def edicao_doces():
         data_prod = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
         doces_dic[cod_prod] = [desc_prod, cod_prod, qtd_prod, valor_prod, data_prod]
         arqs.insert('doces.dat', doces_dic)
-        arqs.insert('doces.txt', doces_dic)
         print(f"Data de cadastro agora refere-se ao dia {doces_dic[cod_prod][4]}")
         print()
         print("Edição concluída!")
@@ -363,9 +362,8 @@ def cadastro_vendas():
 
         vendas_dic[id_venda] = [id_venda, cod_prod, cpf_cliente_venda, qtd_prod_venda, valor_venda, data_venda]
 
-        doces_dic[cod_prod][2]= doces_dic[cod_prod][2]- qtd_prod_venda
+        doces_dic[cod_prod][2] = doces_dic[cod_prod][2] - qtd_prod_venda
         arqs.insert('vendas.dat', vendas_dic)
-       
         arqs.insert('doces.dat', doces_dic)
        
         print(f"O valor final da transação é de R${valor_venda}")
@@ -415,7 +413,6 @@ def delecao_vendas():
    if id_venda in vendas_dic:
        del vendas_dic[id_venda]
        arqs.insert('vendas.dat', vendas_dic)
-       
        arqs.insert('doces.dat', doces_dic)
        
        print()
@@ -461,12 +458,19 @@ def relatorios():
         arquivos_vendas = arqs.read_all("vendas.dat")
         for line in arquivos_vendas:
             print("ID: ", vendas_dic[line][0], "Código do produto: ", vendas_dic[line][1], "CPF do cliente: ", vendas_dic[line][2], "Quantidade de produtos: ", vendas_dic[line][3], "Data de cadastro: ", vendas_dic[line][4])
-    if resposta != 1 and resposta != 2 and resposta != 3 and resposta != 0:
+    if resposta == 0:
         print(f"Resposta inválida! Você será enviado novamente à tela de início!")
+        input("TECLE ENTER PARA PROSSEGUIR")
+        inicial()
+    else:
+        print(f"Resposta inválida! Você será enviado novamente à tela de início!")
+        input("TECLE ENTER PARA PROSSEGUIR")
+        inicial()
+
     print()
-    input("OPERAÇÃO CONCLUÍDA! PRESSIONE ENTER PARA PROSSEGUIR!")
+    print("OPERAÇÃO CONCLUÍDA!")
     print()
-    inicial()
+    
 
 
 ########################################################################################################################################################
@@ -492,11 +496,9 @@ while var_inicial != "0":
                 print("OPÇÃO INVÁLIDA")
                 input("TECLE ENTER PARA PROSSEGUIR")
             var_doces = doces()
-        if var_doces == "0":
-            var_inicial = inicial()
 
 
-    if var_inicial == "2":
+    elif var_inicial == "2":
         var_clientes = clientes()
         while var_clientes != "0":
             if var_clientes == "1":
@@ -511,10 +513,8 @@ while var_inicial != "0":
                 print("OPÇÃO INVÁLIDA")
                 input("TECLE ENTER PARA PROSSEGUIR")
             var_clientes = clientes()
-        if var_clientes == "0":
-            var_inicial = inicial()
 
-    if var_inicial == "3":
+    elif var_inicial == "3":
         var_vendas = vendas()
         while var_vendas != "0":
             if var_vendas == "1":
@@ -527,13 +527,11 @@ while var_inicial != "0":
                 print("OPÇÃO INVÁLIDA")
                 input("TECLE ENTER PARA PROSSEGUIR")
             var_vendas = vendas()
-        if var_vendas == "0":
-            var_inicial = inicial()
 
-    if var_inicial == "4":
-        relatorios()
+    elif var_inicial == "4":
+        var_relatorios = relatorios()
 
-    if var_inicial == "5":
+    elif var_inicial == "5":
         var_informacoes = informacoes()
 
 
