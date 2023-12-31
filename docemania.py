@@ -146,7 +146,8 @@ def cadastro_doces():
 
     while ponto not in valor_prod:
         valor_prod = input("Valor inválido! Insira um valor numérico flutuante (R$xx.xx): R$")
-
+    
+    valor_prod = float(valor_prod)
     data_prod = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
     doces_dic[cod_prod] = [desc_prod, cod_prod, qtd_prod, valor_prod, data_prod]
     arqs.insert('doces.dat', doces_dic)
@@ -244,47 +245,33 @@ def cadastro_clientes():
             print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos.")
 
     cpf_cliente = 0
-    cpf_cliente = str(input("Insira o CPF do cliente: "))
 
-    if len(cpf_cliente) == 11 and cpf_cliente != cpf_cliente[::-1]:
-        # PRIMEIRA VALIDAÇÃO
-        valor_final = 0 
+    while True:
+        cpf_cliente = input("Insira o CPF do cliente: ")
 
-        for i in range(9):
-            valor_1 = int(cpf_cliente[i])
-            valor_2 = 10 - i
-            valor_final += valor_1 * valor_2
+        if cpf_cliente in clientes_dic:
+            print("CPF já existe. Insira um CPF diferente.")
+            continue 
 
-        resto = valor_final % 11
-
-        if (resto <= 1 and cpf_cliente[9] == "0") or (resto >= 2 and cpf_cliente[9] == str(11 - resto)):
-        # SEGUNDA VALIDAÇÃO
-            valor_final = 0
-           
-            for i in range(10):
-                valor_1 = int(cpf_cliente[i])
-                valor_2 = 11 - i
-                valor_final += valor_1 * valor_2
-
+        if len(cpf_cliente) == 11 and cpf_cliente.isdigit() and cpf_cliente != cpf_cliente[::-1]:
+            # PRIMEIRA VALIDAÇÃO
+            valor_final = sum(int(cpf_cliente[i]) * (10 - i) for i in range(9))
             resto = valor_final % 11
 
-            if (resto <= 1 and cpf_cliente[10] == "0") or (resto >= 2 and cpf_cliente[10] == str(11 - resto)):
-                print("CPF Válido!")
-
-            while (resto <= 1 and cpf_cliente[10] != "0") or (resto >= 2 and cpf_cliente[10] != str(11 - resto)):
+            if (resto <= 1 and cpf_cliente[9] == "0") or (resto >= 2 and cpf_cliente[9] == str(11 - resto)):
+                # SEGUNDA VALIDAÇÃO
+                valor_final = sum(int(cpf_cliente[i]) * (11 - i) for i in range(10))
                 resto = valor_final % 11
-                cpf_cliente = input("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
-                
-                
-                
-        while (resto <= 1 and cpf_cliente[9] != "0") or (resto >= 2 and cpf_cliente[9] != str(11 - resto)):
-            cpf_cliente = input("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
-            
-            
-    while len(cpf_cliente) != 11:
-        cpf_cliente = input("Valor inválido! Certifique-se de que o CPF do cliente possui 11 caracteres e não é um palíndromo.")
-        
-        
+
+                if (resto <= 1 and cpf_cliente[10] == "0") or (resto >= 2 and cpf_cliente[10] == str(11 - resto)):
+                    print("CPF Válido!")
+                    break
+                else:
+                    print("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
+            else:
+                print("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
+        else:
+            print("Valor inválido! Certifique-se de que o CPF do cliente possui 11 caracteres e não é um palíndromo.")
         
     data_cadastro = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
     clientes_dic[cpf_cliente]=[nome_cliente, cpf_cliente, data_cadastro]
@@ -375,26 +362,34 @@ def cadastro_vendas():
 
     if cod_prod in doces_dic:
       print(f"O produto foi encontrado no cadastro! Se trata de {doces_dic[cod_prod][0]}.")
-      input("TECLE ENTER PARA PROSSEGUIR")
       print()
 
-      cpf_cliente_venda = input("Insira o CPF do cliente participante da venda.")
+      cpf_cliente_venda = input("Insira o CPF do cliente participante da venda: ")
       print()
 
       if cpf_cliente_venda in clientes_dic:
         print("O CPF foi encontrado em nosso sistema!")
         print()
-        qtd_prod_venda = int(input("Insira a quantidade de produtos na venda: "))
+        
+        while True:
+            qtd_prod_venda = (input("Insira a quantidade de produtos na venda: "))
+            if qtd_prod_venda.isdigit():
+                qtd_prod_venda = int(qtd_prod_venda)
 
-        while qtd_prod_venda > doces_dic[cod_prod][2]:
-             qtd_prod_venda = int(input(f"Que pena! Não há produtos suficientes em estoque. Insira uma quantidade de produtos menor ou igual a {doces_dic[cod_prod][2]}: "))
+                if 0 < qtd_prod_venda <= doces_dic[cod_prod][2]:
+                    print("Há produtos disponíveis!")
+                    break
+                else:
+                    print("Quantidade inválida! Insira novamente a quantidade de produtos na venda.")
+            else:
+                print("Valor inválido! Insira novamente a quantidade de produtos na venda.")
 
-        else:
-            print()
+        qtd_prod_venda = float(qtd_prod_venda)
 
         valor_prod_venda = doces_dic[cod_prod][3]
-
+        valor_prod_venda = float(valor_prod_venda)
         valor_venda = qtd_prod_venda * valor_prod_venda
+        valor_venda = float(valor_venda)
 
         data_venda = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
 
@@ -404,7 +399,7 @@ def cadastro_vendas():
         arqs.insert('vendas.dat', vendas_dic)
         arqs.insert('doces.dat', doces_dic)
        
-        print(f"O valor final da transação é de R${valor_venda}")
+        print(f"O valor final da transação é de R${valor_venda:.2f}")
         print(f"Serviço efetuado em {data_venda}")
         input("TECLE ENTER PARA PROSSEGUIR")
 
@@ -483,19 +478,24 @@ def relatorios():
         print()
         arquivos_doces = arqs.read_all("doces.dat")
         for line in arquivos_doces:
-            print("Descrição: ", doces_dic[line][0], "Código: ", doces_dic[line][1], "Estoque: ", doces_dic[line][2], "Preço: ", doces_dic[line][3], "Data de Cadastro: ", doces_dic[line][4])
+            print("Descrição: ", doces_dic[line][0], "Código: ", doces_dic[line][1], "Estoque: ", doces_dic[line][2], "Preço: ", doces_dic[line][3], "Data de Cadastro: ", doces_dic[line][4])           
+        input("TECLE ENTER PARA PROSSEGUIR")
     elif resposta == "2":
         print(f"Os dados sobre clientes disponíveis são:")
         print()
         arquivos_clientes = arqs.read_all("clientes.dat")
         for line in arquivos_clientes:
             print("Nome: ", clientes_dic[line][0], "CPF: ", clientes_dic[line][1], "Data de cadastro: ", clientes_dic[line][2])
+        input("TECLE ENTER PARA PROSSEGUIR")
+        
     elif resposta == "3":
         print(f"Os dados sobre vendas disponíveis são:")
         print()
         arquivos_vendas = arqs.read_all("vendas.dat")
         for line in arquivos_vendas:
             print("ID: ", vendas_dic[line][0], "Código do produto: ", vendas_dic[line][1], "CPF do cliente: ", vendas_dic[line][2], "Quantidade de produtos: ", vendas_dic[line][3], "Data de cadastro: ", vendas_dic[line][4])
+        input("TECLE ENTER PARA PROSSEGUIR")
+        
     elif resposta == "0":
         input("TECLE ENTER PARA PROSSEGUIR")
         
