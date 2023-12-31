@@ -380,9 +380,11 @@ def cadastro_vendas():
                     print("Há produtos disponíveis!")
                     break
                 else:
-                    print("Quantidade inválida! Insira novamente a quantidade de produtos na venda.")
+                    print("Quantidade inválida ou indisponível! Retorne à tela de início para atualizar o estoque.")
+                    input("TECLE ENTER PARA PROSSEGUIR")
+                    inicial()
             else:
-                print("Valor inválido! Insira novamente a quantidade de produtos na venda.")
+                print("Valor inválido! Insira novamente a quantidade de produtos na venda: ")
 
         qtd_prod_venda = float(qtd_prod_venda)
 
