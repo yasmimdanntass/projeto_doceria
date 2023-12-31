@@ -115,23 +115,21 @@ def cadastro_doces():
     substring = " "
 
     if substring in desc_prod:
-        desc_sem_espacos = desc_prod.replace(" ", "")
-        if desc_sem_espacos.isalpha() == True:
+        if desc_prod.replace(" ", "").isalpha() == True:
             print("Descrição válida!")
             input("TECLE ENTER PARA PROSSEGUIR")
-        if desc_sem_espacos.isalpha() == False:
-            print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos.")
-            input("TECLE ENTER PARA PROSSEGUIR")
-            cadastro_clientes()
+        while desc_prod.replace(" ", "").isalpha() == False:
+            desc_prod = input("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos: ")
+            
                 
     else:
-        if desc_prod.isalpha() == True:
+        if desc_prod.replace(" ", "").isalpha() == True:
             print("Descrição válida!")
             input("TECLE ENTER PARA PROSSEGUIR")
-        if desc_prod.isalpha() == False:
-            print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos.")
+        while desc_prod.replace(" ", "").isalpha() == False:
+            print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos: ")
             input("TECLE ENTER PARA PROSSEGUIR")
-            cadastro_clientes()
+            
 
     cod_prod = input("Insira o código do produto (à sua escolha e diferente dos demais): ")
     while cod_prod in doces_dic:
@@ -250,12 +248,11 @@ def cadastro_clientes():
     nome_cliente = str(input("Insira o nome completo do cliente: "))
     substring = " "
 
-    if substring in nome_cliente and nome_cliente != "":
-        nomes = nome_cliente.replace(" ", "")
-        if nomes.isalpha() == True:
+    if substring in nome_cliente:
+        if nome_cliente.replace(" ", "").isalpha() == True:
             print("Nome válido!")
             input("TECLE ENTER PARA PROSSEGUIR")
-        while nomes.isalpha() == False:
+        while nome_cliente.replace(" ", "").isalpha() == False:
              nome_cliente = input("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos: ")
            
                 
@@ -265,9 +262,8 @@ def cadastro_clientes():
 
     cpf_cliente = 0
     cpf_cliente = str(input("Insira o CPF do cliente: "))
-    tamanho_cpf = len(cpf_cliente)
 
-    if tamanho_cpf == 11 and cpf_cliente != cpf_cliente[::-1]:
+    if len(cpf_cliente) == 11 and cpf_cliente != cpf_cliente[::-1]:
         # PRIMEIRA VALIDAÇÃO
         valor_final = 0 
 
@@ -281,7 +277,7 @@ def cadastro_clientes():
         if (resto <= 1 and cpf_cliente[9] == "0") or (resto >= 2 and cpf_cliente[9] == str(11 - resto)):
         # SEGUNDA VALIDAÇÃO
             valor_final = 0
-
+           
             for i in range(10):
                 valor_1 = int(cpf_cliente[i])
                 valor_2 = 11 - i
@@ -291,20 +287,21 @@ def cadastro_clientes():
 
             if (resto <= 1 and cpf_cliente[10] == "0") or (resto >= 2 and cpf_cliente[10] == str(11 - resto)):
                 print("CPF Válido!")
-            else:
-                print("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
-                input("Pressione ENTER para realizar o cadastro novamente.")
-                cadastro_clientes()
                 
-        else:
-            print("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
-            input("Pressione ENTER para realizar o cadastro novamente.")
-            cadastro_clientes()
+            while (resto <= 1 and cpf_cliente[10] != "0") or (resto >= 2 and cpf_cliente[10] != str(11 - resto)):
+                resto = valor_final % 11
+                cpf_cliente = input("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
+                
+                
+                
+        while (resto <= 1 and cpf_cliente[9] != "0") or (resto >= 2 and cpf_cliente[9] != str(11 - resto)):
+            cpf_cliente = input("Valor inválido! Certifique-se de que o CPF do cliente é existente.")
             
-    else:
-        print("Valor inválido! Certifique-se de que o CPF do cliente possui 11 caracteres e não é um palíndromo.")
-        input("Pressione ENTER para realizar o cadastro novamente.")
-        cadastro_clientes()
+            
+    while len(cpf_cliente) != 11:
+        cpf_cliente = input("Valor inválido! Certifique-se de que o CPF do cliente possui 11 caracteres e não é um palíndromo.")
+        
+        
         
     data_cadastro = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
     clientes_dic[cpf_cliente]=[nome_cliente, cpf_cliente, data_cadastro]
