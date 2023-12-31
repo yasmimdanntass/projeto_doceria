@@ -255,15 +255,13 @@ def cadastro_clientes():
         if nomes.isalpha() == True:
             print("Nome válido!")
             input("TECLE ENTER PARA PROSSEGUIR")
-        if nomes.isalpha() == False:
-            print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos.")
-            input("TECLE ENTER PARA PROSSEGUIR")
-            cadastro_clientes()
+        while nomes.isalpha() == False:
+             nome_cliente = input("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos: ")
+           
                 
-    else:
-        print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos e pelo menos um espaço.")
-        input("TECLE ENTER PARA PROSSEGUIR")
-        cadastro_clientes()
+    while substring not in nome_cliente:
+        nome_cliente = input("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos: ")
+        
 
     cpf_cliente = 0
     cpf_cliente = str(input("Insira o CPF do cliente: "))
@@ -313,7 +311,7 @@ def cadastro_clientes():
     arqs.insert('clientes.dat', clientes_dic)
     print(f"Cadastro de cliente concluído em {data_cadastro}!")
     input("TECLE ENTER PARA PROSSEGUIR")
-    inicial()
+    
 
 # Pesquisa de clientes
 
