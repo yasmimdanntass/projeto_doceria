@@ -14,6 +14,11 @@ clientes_dic = arqs.read_all('clientes.dat')
 doces_dic = arqs.read_all('doces.dat')
 vendas_dic = arqs.read_all('vendas.dat')
 
+
+
+
+########################################################################################################################################################
+
 # TELA INICIAL #
 def inicial():
     os.system("clear")
@@ -94,7 +99,8 @@ def informacoes():
     print("#  UM ESTABELECIMENTO ALIMENTÍCIO.                     #")
     print("#                                                      #")
     print("########################################################")
-
+    print()
+    input("TECLE ENTER PARA RETORNAR À TELA DE INÍCIO")
 ########################################################################################################################################################
 
 # Cadastro de produtos 
@@ -103,15 +109,58 @@ def cadastro_doces():
     print("Olá! Você está na tela de cadastro de doces.")
     print("Para prosseguir, preencha as informações solicitadas.")
     print()
+
     desc_prod = input("Insira uma breve descrição do produto: ")
+    desc_sem_espacos = 0
+    substring = " "
+
+    if substring in desc_prod:
+        desc_sem_espacos = desc_prod.replace(" ", "")
+        if desc_sem_espacos.isalpha() == True:
+            print("Descrição válida!")
+            input("TECLE ENTER PARA PROSSEGUIR")
+        if desc_sem_espacos.isalpha() == False:
+            print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos.")
+            input("TECLE ENTER PARA PROSSEGUIR")
+            cadastro_clientes()
+                
+    else:
+        if desc_prod.isalpha() == True:
+            print("Descrição válida!")
+            input("TECLE ENTER PARA PROSSEGUIR")
+        if desc_prod.isalpha() == False:
+            print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos.")
+            input("TECLE ENTER PARA PROSSEGUIR")
+            cadastro_clientes()
+
     cod_prod = input("Insira o código do produto (à sua escolha e diferente dos demais): ")
     while cod_prod in doces_dic:
         print("Código já utilizado em outro produto. Escolha outro!")
         cod_prod = input("Insira o código do produto (à sua escolha e diferente dos demais): ")
     else:
         print("Código de produto disponível!")
-    qtd_prod = int(input("Insira a quantidade de produtos disponíveis: "))
-    valor_prod = float(input("Insira o valor do produto: R$"))
+
+    qtd_prod = input("Insira a quantidade de produtos disponíveis: ")
+
+    while qtd_prod.isnumeric() == False:
+        qtd_prod = input("Valor inválido! Insira um valor numérico inteiro: ")
+        
+    qtd_prod = int(qtd_prod)
+        
+    valor_prod = input("Insira o valor do produto (com valor flutuante e ponto para indicar a casa decimal): R$")
+    
+    ponto = "."
+    valor_sem_ponto = 0
+    
+    
+    if ponto in valor_prod:
+        valor_sem_ponto = valor_prod.replace(".", "")
+        while valor_sem_ponto.isnumeric() == False:
+            valor_sem_ponto = input("Valor inválido! Insira um valor numérico flutuante (seguindo o modelo - R$xx.x): R$")
+
+    while ponto not in valor_prod:
+        valor_prod = input("Valor inválido! Insira um valor numérico flutuante (R$xx.xx): R$")
+
     data_prod = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
     doces_dic[cod_prod] = [desc_prod, cod_prod, qtd_prod, valor_prod, data_prod]
     arqs.insert('doces.dat', doces_dic)
@@ -199,13 +248,24 @@ def cadastro_clientes():
     print("Olá! Você está na tela de cadastro de seus clientes.")
     print("Para prosseguir, preencha as informações solicitadas.")
     nome_cliente = str(input("Insira o nome completo do cliente: "))
-    cpf_cliente = 0
+    substring = " "
 
-    while len(nome_cliente) <= 3:
-        print("Insira um nome válido e com mais de 3 caracteres. Você será direcionado à tela de clientes para realizar o cadastro novamente.")
+    if substring in nome_cliente and nome_cliente != "":
+        nomes = nome_cliente.replace(" ", "")
+        if nomes.isalpha() == True:
+            print("Nome válido!")
+            input("TECLE ENTER PARA PROSSEGUIR")
+        if nomes.isalpha() == False:
+            print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos.")
+            input("TECLE ENTER PARA PROSSEGUIR")
+            cadastro_clientes()
+                
+    else:
+        print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos e pelo menos um espaço.")
         input("TECLE ENTER PARA PROSSEGUIR")
         cadastro_clientes()
 
+    cpf_cliente = 0
     cpf_cliente = str(input("Insira o CPF do cliente: "))
     tamanho_cpf = len(cpf_cliente)
 
@@ -438,38 +498,34 @@ def relatorios():
     print("[3] - Para visualizar dados das vendas")
     print("[0] - Para retornar à tela de início")
     print()
-    resposta = int(input())
+    resposta = input()
     print()
-    if resposta == 1:
+    if resposta == "1":
         print(f"Os dados sobre doces disponíveis são:")
         print()
         arquivos_doces = arqs.read_all("doces.dat")
         for line in arquivos_doces:
             print("Descrição: ", doces_dic[line][0], "Código: ", doces_dic[line][1], "Estoque: ", doces_dic[line][2], "Preço: ", doces_dic[line][3], "Data de Cadastro: ", doces_dic[line][4])
-    if resposta == 2:
+    elif resposta == "2":
         print(f"Os dados sobre clientes disponíveis são:")
         print()
         arquivos_clientes = arqs.read_all("clientes.dat")
         for line in arquivos_clientes:
             print("Nome: ", clientes_dic[line][0], "CPF: ", clientes_dic[line][1], "Data de cadastro: ", clientes_dic[line][2])
-    if resposta == 3:
+    elif resposta == "3":
         print(f"Os dados sobre vendas disponíveis são:")
         print()
         arquivos_vendas = arqs.read_all("vendas.dat")
         for line in arquivos_vendas:
             print("ID: ", vendas_dic[line][0], "Código do produto: ", vendas_dic[line][1], "CPF do cliente: ", vendas_dic[line][2], "Quantidade de produtos: ", vendas_dic[line][3], "Data de cadastro: ", vendas_dic[line][4])
-    if resposta == 0:
-        print(f"Resposta inválida! Você será enviado novamente à tela de início!")
+    elif resposta == "0":
         input("TECLE ENTER PARA PROSSEGUIR")
-        inicial()
+        
     else:
         print(f"Resposta inválida! Você será enviado novamente à tela de início!")
         input("TECLE ENTER PARA PROSSEGUIR")
-        inicial()
+        
 
-    print()
-    print("OPERAÇÃO CONCLUÍDA!")
-    print()
     
 
 
@@ -537,7 +593,7 @@ while var_inicial != "0":
 
     else:
         print("OPÇÃO INVÁLIDA")
-    input("TECLE ENTER PARA PROSSEGUIR")
+        input("TECLE ENTER PARA PROSSEGUIR")
     var_inicial = inicial()
 
 print()
