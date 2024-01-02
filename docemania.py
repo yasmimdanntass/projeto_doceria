@@ -250,7 +250,7 @@ def cadastro_clientes():
         cpf_cliente = input("Insira o CPF do cliente: ")
 
         if cpf_cliente in clientes_dic:
-            print("CPF já existe. Insira um CPF diferente.")
+            print("CPF já existe. Insira um CPF diferente: ")
             continue 
 
         if len(cpf_cliente) == 11 and cpf_cliente.isdigit() and cpf_cliente != cpf_cliente[::-1]:
@@ -311,10 +311,15 @@ def edicao_clientes():
     print("Olá! Você está na tela de edição de clientes.")
     cpf_cliente = input("Para prosseguir, insira o CPF do cliente: ")
     if cpf_cliente in clientes_dic:
+            substring = " "
             while True:
                 nome_cliente = input("Insira o nome completo alterado do cliente: ")
                 if substring in nome_cliente and nome_cliente.replace(" ", "").isalpha():
                     print("Valor válido!")
+                    print()
+                    print("Edição concluída!")
+                    print()
+                    input("TECLE ENTER PARA PROSSEGUIR")
                     continue
                 else:
                     print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos.")
@@ -322,10 +327,7 @@ def edicao_clientes():
                     clientes_dic[cpf_cliente]=[nome_cliente, cpf_cliente, data_cadastro]
                     arqs.insert('clientes.dat', clientes_dic)
             
-            print()
-            print("Edição concluída!")
-            print()
-            input("TECLE ENTER PARA PROSSEGUIR")
+            
 
     else:
             print()
@@ -453,7 +455,7 @@ def pesquisa_vendas():
 def delecao_vendas():
    print()
    print("Olá! Você está na tela de cancelamento de vendas.")   
-   id_venda =  input("Para prosseguir, insira o ID da venda que gostaria de cancelar")
+   id_venda =  input("Para prosseguir, insira o ID da venda que gostaria de cancelar: ")
    if id_venda in vendas_dic:
        del vendas_dic[id_venda]
        arqs.insert('vendas.dat', vendas_dic)
