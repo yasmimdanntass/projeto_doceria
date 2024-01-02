@@ -130,7 +130,10 @@ def cadastro_doces():
 
     while qtd_prod.isnumeric() == False:
         qtd_prod = input("Valor inválido! Insira um valor numérico inteiro: ")
-        
+    
+    while qtd_prod != str(int(qtd_prod)):
+        qtd_prod = input("Valor inválido! Insira um valor numérico inteiro: ")
+
     qtd_prod = int(qtd_prod)
         
     valor_prod = input("Insira o valor do produto (com valor flutuante e ponto para indicar a casa decimal): R$")
@@ -184,26 +187,59 @@ def pesquisa_doces():
 def edicao_doces():
     print()
     print("Olá! Você está na tela de edição de doces.")
-    cod_prod = input("Para prosseguir, insira o código do produto desejado: ")
-    if cod_prod in doces_dic:
-        print()
-        desc_prod = input("Insira a alteração na descrição do produto: ")
-        qtd_prod = int(input("Insira a alteração na quantidade de produtos disponíveis: "))
-        valor_prod = float(input("Insira o novo valor do produto: R$"))
-        data_prod = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
-        doces_dic[cod_prod] = [desc_prod, cod_prod, qtd_prod, valor_prod, data_prod]
-        arqs.insert('doces.dat', doces_dic)
-        print(f"Data de cadastro agora refere-se ao dia {doces_dic[cod_prod][4]}")
-        print()
-        print("Edição concluída!")
-        print()
-        input("TECLE ENTER PARA PROSSEGUIR")
+    while True:
+        cod_prod = input("Para prosseguir, insira o código do produto desejado: ")
+        if cod_prod in doces_dic:
+            print()
+            desc_prod = input("Insira uma breve descrição do produto: ")
+            if desc_prod.replace(" ", "").isalpha():
+                print("Nome válido!")
+                qtd_prod = input("Insira a alteração na quantidade de produtos disponíveis: ")
+                if qtd_prod.isdigit() == True and qtd_prod == str(int(qtd_prod)):
+                    qtd_prod = int(qtd_prod)
+                    valor_prod = input("Insira o novo valor do produto seguindo o modelo (R$xx.xx): R$")
+                    ponto = "."
+                    if valor_prod.replace(ponto, "").isdigit() == True and ponto in valor_prod:
+                        data_prod = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
+                        doces_dic[cod_prod] = [desc_prod, cod_prod, qtd_prod, valor_prod, data_prod]
+                        arqs.insert('doces.dat', doces_dic)
+                        print(f"Data de cadastro agora refere-se ao dia {doces_dic[cod_prod][4]}")
+                        print()
+                        print("Edição concluída!")
+                        print()
+                        input("TECLE ENTER PARA PROSSEGUIR")
+                        break
+                    else:
+                        print()
+                        print("Valor inválido! Insira-o novamente certificando-se de que possui um valor flutuante (R$ xx.xx).")
+                        print()
+                        input("TECLE ENTER PARA PROSSEGUIR")
+                        break
+                else:
+                    print()
+                    print("Valor inválido! Realize a edição novamente certificando-se de que a quantidade segue em números inteiros.")
+                    print()
+                    input("TECLE ENTER PARA PROSSEGUIR")
+                    break
 
-    else:
-        print()
-        print("Código de produto não encontrado!")
-        print()
-        input("TECLE ENTER PARA PROSSEGUIR")
+            else:
+                print()
+                print("Nome inválido! Realize a edição novamente certificando-se de que o valor segue o modelo proposto (R$xx.xx).")
+                print()
+                input("TECLE ENTER PARA PROSSEGUIR")
+                break
+                
+        else:
+            print()
+            print("Código de produto não encontrado!")
+            print()
+            input("TECLE ENTER PARA PROSSEGUIR")            
+            break
+            
+            
+            
+
+    
 
 
 # Deleção de produtos
@@ -320,7 +356,7 @@ def edicao_clientes():
                     print("Edição concluída!")
                     print()
                     input("TECLE ENTER PARA PROSSEGUIR")
-                    continue
+                    break
                 else:
                     print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos.")
                     data_cadastro = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
@@ -411,6 +447,7 @@ def cadastro_vendas():
                         
                 else:
                     print("Valor inválido! Retorne à tela inicial para realizar o cadastro novamente, certificando-se de que inseriu um valor numérico:.")
+                    input("TECLE ENTER PARA PROSSEGUIR")
                     break
             else:
                 print("O CPF não foi registrado em antecipação! Você será direcionado à tela de início para realizar o cadastro.")
