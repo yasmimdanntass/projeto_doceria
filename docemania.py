@@ -285,6 +285,7 @@ def cadastro_clientes():
 def pesquisa_clientes():
     print()
     print("Olá! Você está na tela de pesquisa de clientes.")
+
     cpf_cliente = input("Para prosseguir, insira o CPF do cliente: ")
     if cpf_cliente in clientes_dic:
         print()
@@ -295,6 +296,7 @@ def pesquisa_clientes():
         print("Pesquisa de cliente concluída!")
         print()
         input("TECLE ENTER PARA PROSSEGUIR")
+
 
     else:
         print()
@@ -309,21 +311,27 @@ def edicao_clientes():
     print("Olá! Você está na tela de edição de clientes.")
     cpf_cliente = input("Para prosseguir, insira o CPF do cliente: ")
     if cpf_cliente in clientes_dic:
-        nome_cliente = input("Insira o nome completo alterado do cliente: ")
-        data_cadastro = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
-        clientes_dic[cpf_cliente]=[nome_cliente, cpf_cliente, data_cadastro]
-        arqs.insert('clientes.dat', clientes_dic)
-        
-        print()
-        print("Edição concluída!")
-        print()
-        input("TECLE ENTER PARA PROSSEGUIR")
+            while True:
+                nome_cliente = input("Insira o nome completo alterado do cliente: ")
+                if substring in nome_cliente and nome_cliente.replace(" ", "").isalpha():
+                    print("Valor válido!")
+                    continue
+                else:
+                    print("Nome inválido! Insira-o novamente certificando-se de que possui apenas caracteres alfabéticos.")
+                    data_cadastro = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
+                    clientes_dic[cpf_cliente]=[nome_cliente, cpf_cliente, data_cadastro]
+                    arqs.insert('clientes.dat', clientes_dic)
+            
+            print()
+            print("Edição concluída!")
+            print()
+            input("TECLE ENTER PARA PROSSEGUIR")
 
     else:
-        print()
-        print("CPF do cliente não encontrado!")
-        print()
-        input("TECLE ENTER PARA PROSSEGUIR")
+            print()
+            print("CPF do cliente não encontrado!")
+            print()
+            input("TECLE ENTER PARA PROSSEGUIR")
 
 # Deleção de clientes
 
@@ -354,67 +362,68 @@ def cadastro_vendas():
     print("Para prosseguir, preencha as informações solicitadas.")
     print()
 
-    id_venda = random.randint(1000, 9999)
-    print(f"O ID da venda é {id_venda}")
-    print()
+    id_venda = input("Selecione um valor numérico para o ID da venda: ")
+    while id_venda.isnumeric() == False and id_venda not in doces_dic:
+            id_venda = input("Valor inválido ou já utilizado! Selecione um valor numérico para o ID da venda: ")
 
-    cod_prod = input("Insira o código do produto em transação: ")
+# Código do produto
+    while True:
+        cod_prod = input("Insira o código do produto em transação: ")
 
-    if cod_prod in doces_dic:
-      print(f"O produto foi encontrado no cadastro! Se trata de {doces_dic[cod_prod][0]}.")
-      print()
+        if cod_prod in doces_dic:
+            print(f"O produto foi encontrado no cadastro! Se trata de {doces_dic[cod_prod][0]}.")
+            print()
+            cpf_cliente_venda = input("Insira o CPF do cliente participante da venda: ")
+            print()
+            if cpf_cliente_venda in clientes_dic:
+                print("O CPF foi encontrado em nosso sistema!")
+                print()
+                qtd_prod_venda = (input("Insira a quantidade de produtos na venda: "))
+                if qtd_prod_venda.isdigit():
+                    qtd_prod_venda = int(qtd_prod_venda)
 
-      cpf_cliente_venda = input("Insira o CPF do cliente participante da venda: ")
-      print()
+                    if 0 < qtd_prod_venda <= doces_dic[cod_prod][2]:
+                        print("Há produtos disponíveis!")
+                        qtd_prod_venda = float(qtd_prod_venda)
+                        valor_prod_venda = doces_dic[cod_prod][3]
+                        valor_prod_venda = float(valor_prod_venda)
+                        valor_venda = qtd_prod_venda * valor_prod_venda
+                        valor_venda = float(valor_venda)
 
-      if cpf_cliente_venda in clientes_dic:
-        print("O CPF foi encontrado em nosso sistema!")
-        print()
-        
-        while True:
-            qtd_prod_venda = (input("Insira a quantidade de produtos na venda: "))
-            if qtd_prod_venda.isdigit():
-                qtd_prod_venda = int(qtd_prod_venda)
+                        data_venda = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
 
-                if 0 < qtd_prod_venda <= doces_dic[cod_prod][2]:
-                    print("Há produtos disponíveis!")
-                    break
+                        vendas_dic[id_venda] = [id_venda, cod_prod, cpf_cliente_venda, qtd_prod_venda, valor_venda, data_venda]
+
+                        doces_dic[cod_prod][2] = doces_dic[cod_prod][2] - qtd_prod_venda
+                        arqs.insert('vendas.dat', vendas_dic)
+                        arqs.insert('doces.dat', doces_dic)
+                        
+                        print(f"O valor final da transação é de R${valor_venda:.2f}")
+                        print(f"Serviço efetuado em {data_venda}")
+                        input("TECLE ENTER PARA PROSSEGUIR")
+                        break
+                    else:
+                        print("Quantidade inválida ou indisponível! Retorne à tela de doces para atualizar o estoque.")
+                        input("TECLE ENTER PARA PROSSEGUIR")
+                        break
+                        
                 else:
-                    print("Quantidade inválida ou indisponível! Retorne à tela de início para atualizar o estoque.")
-                    input("TECLE ENTER PARA PROSSEGUIR")
-                    inicial()
+                    print("Valor inválido! Retorne à tela inicial para realizar o cadastro novamente, certificando-se de que inseriu um valor numérico:.")
+                    break
             else:
-                print("Valor inválido! Insira novamente a quantidade de produtos na venda: ")
-
-        qtd_prod_venda = float(qtd_prod_venda)
-
-        valor_prod_venda = doces_dic[cod_prod][3]
-        valor_prod_venda = float(valor_prod_venda)
-        valor_venda = qtd_prod_venda * valor_prod_venda
-        valor_venda = float(valor_venda)
-
-        data_venda = "{}/{}/{}".format(data_atual.day, data_atual.month, data_atual.year)
-
-        vendas_dic[id_venda] = [id_venda, cod_prod, cpf_cliente_venda, qtd_prod_venda, valor_venda, data_venda]
-
-        doces_dic[cod_prod][2] = doces_dic[cod_prod][2] - qtd_prod_venda
-        arqs.insert('vendas.dat', vendas_dic)
-        arqs.insert('doces.dat', doces_dic)
-       
-        print(f"O valor final da transação é de R${valor_venda:.2f}")
-        print(f"Serviço efetuado em {data_venda}")
-        input("TECLE ENTER PARA PROSSEGUIR")
+                print("O CPF não foi registrado em antecipação! Você será direcionado à tela de início para realizar o cadastro.")
+                input("TECLE ENTER PARA PROSSEGUIR")
+                break
+        else: 
+                print("O produto não foi encontrado em nosso sistema. Você será direcionado para realizar o cadastro na tela de início!")
+                input("TECLE ENTER PARA PROSSEGUIR")
+                break
 
 
-      else:
-        print("O CPF não foi registrado em antecipação! Você será direcionado à tela de início para realizar o cadastro.")
-        input("TECLE ENTER PARA PROSSEGUIR")
-        var_inicial = inicial()
+        
 
-    else: 
-        print("O produto não foi encontrado em nosso sistema. Você será direcionado para realizar o cadastro na tela de início!")
-        input("TECLE ENTER PARA PROSSEGUIR")
-        inicial()
+
+      
 
 
 
