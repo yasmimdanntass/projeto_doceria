@@ -408,9 +408,10 @@ def cadastro_vendas():
     print()
 
     id_venda = input("Selecione um valor numérico para o ID da venda: ")
-    while id_venda.isnumeric() == False and id_venda not in doces_dic:
+    while id_venda.isnumeric() == False:
             id_venda = input("Valor inválido ou já utilizado! Selecione um valor numérico para o ID da venda: ")
-
+    while id_venda.isnumeric() == True and id_venda in doces_dic:
+            id_venda = input("Valor inválido ou já utilizado! Selecione um valor numérico para o ID da venda: ")        
 # Código do produto
     while True:
         cod_prod = input("Insira o código do produto em transação: ")
